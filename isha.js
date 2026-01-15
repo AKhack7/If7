@@ -1,7 +1,4 @@
 
-/*******************************************************
- * 2. DATETIME LOGIC
- *******************************************************/
 function updateDateTime() {
   const now = new Date();
   document.getElementById('time').textContent = now.toLocaleTimeString('en-US', {
