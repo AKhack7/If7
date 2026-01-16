@@ -1,0 +1,26 @@
+✅ Run Karne Ka Final Setup (Windows)
+Step 1: Folder banao
+Example: C:\IshaAssistant\
+
+Usme ye 2 files paste/save:
+
+isha_assistant.py
+isha_llm.py
+Step 2: Install dependencies
+CMD/PowerShell me:
+
+Copypip install pyttsx3 SpeechRecognition pyautogui psutil pywhatkit sympy requests numpy
+Mic ke liye PyAudio (important):
+
+Copypip install pyaudio
+Agar pyaudio install issue de to batao, main aapko Windows wheel method bhi de dunga.
+
+Step 3: Run
+Copypython isha_assistant.py
+✅ LLM Use Examples (Assistant me)
+help
+remember name=Isha
+recall name
+i am sad → phir yes (joke dega)
+Aap chaho to main “Full 100+ patterns” wali LLM version bhi bana dunga
+Bas bolo: “LLM ko advanced bana do” aur aapko kaunsi language mix chahiye (Hindi only / Hinglish / English).
