@@ -1,0 +1,181 @@
+import re
+import json
+import os
+import random
+from dataclasses import dataclass, field
+from typing import Dict, List, Tuple
+
+DEFAULT_MEMORY_FILE = "isha_memory.json"
+
+
+def _rand(items: List[str]) -> str:
+    return random.choice(items) if items else ""
+
+
+@dataclass
+class IshaLLM:
+    """
+    Rule-based 'LLM simulation' (offline):
+    - Regex pattern matching
+    - Random responses
+    - Context tracking (current_context)
+    - Persistent memory (key=value) in JSON file
+    """
+    memory_file: str = DEFAULT_MEMORY_FILE
+    current_context: str = "unknown"
+    memory: Dict[str, str] = field(default_factory=dict)
+    patterns: Dict[str, List[str]] = field(default_factory=dict)
+    responses: Dict[str, List[str]] = field(default_factory=dict)
+
+    def __post_init__(self):
+        self._init_patterns_and_responses()
+        self.load_memory()
+
+    def _init_patterns_and_responses(self):
+        self.patterns = {
+            "greeting": [r"\bhi\b", r"\bhello\b", r"\bhey\b", r"\bnamaste\b", r"\bhy\b"],
+            "how_are_you": [r"how are you", r"kaise ho", r"kya haal", r"how r u"],
+            "thanks": [r"thank you", r"thanks", r"shukriya", r"dhanyavaad"],
+            "joke": [r"\bjoke\b", r"make me laugh", r"hasao", r"jox"],
+            "motivate": [r"\bmotivate\b", r"motivation", r"inspire", r"himat", r"encourage"],
+            "sad": [r"\bi am sad\b", r"\bsad\b", r"mujhe bura lag raha", r"depressed", r"low feel"],
+            "help": [r"\bhelp\b", r"\bcommands\b", r"what can you do", r"kya kar sakti ho"],
+            "followup_yes": [r"\byes\b", r"\bhaan\b", r"\byup\b", r"\bokay\b", r"\bok\b"],
+            "followup_no": [r"\bno\b", r"\bnahi\b", r"\bnope\b"],
+            "remember": [r"\bremember\b", r"\byaad rakh\b"],
+            "recall": [r"\brecall\b", r"\byaad hai\b", r"\bwhat did you remember\b"],
+            "unknown": []
+        }
+
+        self.responses = {
+            "greeting": [
+                "Namaste! Main Isha hoon. Aapko kis cheez me help chahiye?",
+                "Hello! Batao, kya karna hai?",
+                "Hi! Main ready hoon—command bolo."
+            ],
+            "how_are_you": [
+                "Main bilkul theek hoon. Aap kaise ho?",
+                "Main ready hoon! Aapka din kaisa jaa raha hai?",
+                "Main acchi hoon. Aapko kya help chahiye?"
+            ],
+            "thanks": ["Welcome!", "Koi baat nahi.", "Anytime!"],
+            "joke": [
+                "Ek joke: Programmer ne chai mangi, waiter bola 'Java ya Python?'",
+                "Joke: Bug ko fix karte karte, bug fix karne wala hi bug ban gaya!",
+                "Ek aur: WiFi ka password kya hai? — 'Iloveyou'... network bhi emotional ho gaya!"
+            ],
+            "motivate": [
+                "Chhote steps bhi progress hote hain. Bas start karo.",
+                "Aaj ka thoda effort, kal ka big result ban sakta hai.",
+                "Tum kar sakte ho—बस consistency rakho."
+            ],
+            "sad": [
+                "Mujhe afsos hai ki aap sad feel kar rahe ho. Kya hua—share karoge?",
+                "Aap akela nahi ho. Main yahin hoon. Kya baat hai?",
+                "Agar aap chaho, main aapko motivate ya joke suna sakti hoon."
+            ],
+            "help": [
+                "Main time/date, math solve, apps/settings open, weather, music, whatsapp, etc. kar sakti hoon. Example: 'time', 'date', 'solve 12*9', 'open calculator', 'weather'.",
+                "Commands try karo: 'open settings', 'open downloads', 'play music', 'weather', 'battery', 'shutdown'."
+            ],
+            "remember": [
+                "Haan, boliye kya yaad rakhna hai? Format: remember key=value",
+                "Okay. Aap 'remember name=Rahul' jaisa likh sakte ho."
+            ],
+            "recall": [
+                "Aap kya recall karna chahte ho? Format: recall key",
+                "Bataye key, main memory check karti hoon."
+            ],
+            "followup_yes": ["Theek hai. Aage batao.", "Okay! Next kya karna hai?"],
+            "followup_no": ["Theek hai. Koi aur help chahiye?", "Okay. Jab chaho bol dena."],
+            "unknown": [
+                "Maaf kijiye, mujhe samajh nahi aaya. Aap thoda aur clear bol sakte ho?",
+                "Command samajh nahi aayi. Aap 'help' try karo.",
+                "Main sure nahi hoon. Aap time/date/weather ya open calculator try kar sakte ho."
+            ]
+        }
+
+    # -------------------------
+    # Memory
+    # -------------------------
+    def load_memory(self):
+        try:
+            if os.path.exists(self.memory_file):
+                with open(self.memory_file, "r", encoding="utf-8") as f:
+                    self.memory = json.load(f) or {}
+        except Exception:
+            self.memory = {}
+
+    def save_memory(self):
+        try:
+            with open(self.memory_file, "w", encoding="utf-8") as f:
+                json.dump(self.memory, f, ensure_ascii=False, indent=2)
+        except Exception:
+            pass
+
+    def remember_kv(self, key: str, value: str) -> str:
+        key = key.strip()
+        value = value.strip()
+        if not key:
+            return "Key empty hai. Example: remember name=Rahul"
+        self.memory[key] = value
+        self.save_memory()
+        return f"Yaad kar liya! {key} = {value}"
+
+    def recall_key(self, key: str) -> str:
+        key = key.strip()
+        if not key:
+            return "Key nahi diya. Example: recall name"
+        if key in self.memory:
+            return f"Mujhe yaad hai: {key} = {self.memory[key]}"
+        return "Mujhe ye yaad nahi hai."
+
+    # -------------------------
+    # Pattern + Response
+    # -------------------------
+    def match_pattern(self, text: str) -> str:
+        t = (text or "").lower().strip()
+        for intent, pats in self.patterns.items():
+            for p in pats:
+                if re.search(p, t):
+                    return intent
+        return "unknown"
+
+    def generate_response(self, text: str) -> Tuple[str, str]:
+        t = (text or "").lower().strip()
+        intent = self.match_pattern(t)
+
+        if intent == "remember":
+            m = re.search(r"remember\s+(.+)", t)
+            if m:
+                payload = m.group(1).strip()
+                if "=" in payload:
+                    key, value = payload.split("=", 1)
+                    resp = self.remember_kv(key, value)
+                else:
+                    resp = _rand(self.responses["remember"])
+            else:
+                resp = _rand(self.responses["remember"])
+
+            self.current_context = "remember"
+            return resp, "remember"
+
+        if intent == "recall":
+            m = re.search(r"recall\s+(.+)", t)
+            if m:
+                key = m.group(1).strip()
+                resp = self.recall_key(key)
+            else:
+                resp = _rand(self.responses["recall"])
+
+            self.current_context = "recall"
+            return resp, "recall"
+
+        if intent == "followup_yes" and self.current_context == "sad":
+            resp = "Chalo aapko cheer up karte hain. " + _rand(self.responses["joke"])
+            self.current_context = "joke"
+            return resp, "followup_yes"
+
+        resp = _rand(self.responses.get(intent, self.responses["unknown"]))
+        self.current_context = intent
+        return resp, intent
