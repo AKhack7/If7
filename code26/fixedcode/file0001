@@ -1,1 +1,204 @@
+# ==========================================================
+#               ISHA ASSISTANT - VERSION 1
+# ==========================================================
 
+import json
+import datetime
+import hashlib
+import os
+import re
+import logging
+from collections import deque
+
+# ==========================================================
+# 1️⃣ COMMAND HISTORY SYSTEM
+# ==========================================================
+
+class CommandHistory:
+    def __init__(self, max_len=50):
+        self.history = deque(maxlen=max_len)
+
+    def add(self, command_text):
+        self.history.append({
+            "time": datetime.datetime.now().isoformat(),
+            "command": command_text
+        })
+
+    def last_command(self):
+        return self.history[-1] if self.history else None
+
+
+# ==========================================================
+# 2️⃣ CONTEXT MEMORY
+# ==========================================================
+
+class ContextMemory:
+    def __init__(self):
+        self.context = {}
+
+    def set(self, key, value):
+        self.context[key] = value
+
+    def get(self, key, default=None):
+        return self.context.get(key, default)
+
+    def clear(self):
+        self.context.clear()
+
+
+# ==========================================================
+# 3️⃣ OFFLINE PERSONAL BRAIN
+# ==========================================================
+
+class OfflineBrain:
+    def __init__(self):
+        self.intent_rules = {
+            r"\bopen\b": "OPEN",
+            r"\bclose\b": "CLOSE",
+            r"\btime\b": "TIME",
+            r"\bdate\b": "DATE",
+            r"\bbattery\b": "BATTERY",
+            r"\bexit\b": "EXIT"
+        }
+
+    def detect_intent(self, text):
+        text = text.lower()
+        for pattern, intent in self.intent_rules.items():
+            if re.search(pattern, text):
+                return intent
+        return "UNKNOWN"
+
+
+# ==========================================================
+# 4️⃣ SAFE SELF-LEARNING ENGINE
+# ==========================================================
+
+class SelfLearningEngine:
+    def __init__(self, log_file="isha_assistant.log"):
+        self.log_file = log_file
+
+    def analyze_logs(self):
+        if not os.path.exists(self.log_file):
+            return []
+
+        with open(self.log_file, "r", errors="ignore") as f:
+            logs = f.read().lower()
+
+        suggestions = []
+        if logs.count("error") > 3:
+            suggestions.append("Zyada errors aa rahe hain.")
+        if "gesture" not in logs:
+            suggestions.append("Gesture system kam use ho raha hai.")
+
+        return suggestions
+
+
+# ==========================================================
+# 5️⃣ SECURE LOCAL STORE
+# ==========================================================
+
+class SecureLocalStore:
+    def __init__(self, filename="isha_user_data.dat"):
+        self.filename = filename
+        self.secret_key = hashlib.sha256(b"ISHA_LOCAL_SECRET").digest()
+
+    def save(self, data):
+        raw = json.dumps(data).encode()
+        enc = bytes(raw[i] ^ self.secret_key[i % len(self.secret_key)] for i in range(len(raw)))
+        with open(self.filename, "wb") as f:
+            f.write(enc)
+
+    def load(self):
+        if not os.path.exists(self.filename):
+            return {}
+        enc = open(self.filename, "rb").read()
+        raw = bytes(enc[i] ^ self.secret_key[i % len(self.secret_key)] for i in range(len(enc)))
+        return json.loads(raw.decode())
+
+
+# ==========================================================
+# 6️⃣ VERSION-1 ATTACH FUNCTION
+# ==========================================================
+
+def attach_version_1(assistant):
+    assistant.v1_history = CommandHistory()
+    assistant.v1_context = ContextMemory()
+    assistant.v1_brain = OfflineBrain()
+    assistant.v1_learning = SelfLearningEngine()
+    assistant.v1_store = SecureLocalStore()
+
+    original = assistant.process_command
+
+    def wrapped(cmd):
+        assistant.v1_history.add(cmd)
+        intent = assistant.v1_brain.detect_intent(cmd)
+        assistant.v1_context.set("last_intent", intent)
+        response = original(cmd)
+
+        for s in assistant.v1_learning.analyze_logs():
+            logging.info("SUGGESTION: " + s)
+
+        return response
+
+    assistant.process_command = wrapped
+
+
+# ============================================================
+# ISHA CORE — VERSION 2
+# ============================================================
+
+import time
+import threading
+
+logging.basicConfig(filename="isha_secure.log", level=logging.INFO)
+
+class GestureEngineV1:
+    def __init__(self):
+        self.gestures = {
+            "PALM": "MENU",
+            "FIST": "CONFIRM"
+        }
+
+
+class IshaCore:
+    def __init__(self):
+        self.history = CommandHistory()
+        self.context = ContextMemory()
+
+    def process_command(self, text):
+        self.history.add(text)
+        return f"Processed: {text}"
+
+
+# ============================================================
+# INIT CORE
+# ============================================================
+
+isha = IshaCore()
+
+# ✅ SAFE ATTACH (FIXED)
+try:
+    attach_version_1(isha)
+    logging.info("ISHA Version-1 attached successfully.")
+except Exception as e:
+    logging.error(str(e))
+
+
+# ============================================================
+# OPTIONAL EXTENSIONS (SAFE IMPORT)
+# ============================================================
+
+try:
+    import psutil
+except:
+    psutil = None
+
+try:
+    import pyautogui
+except:
+    pyautogui = None
+
+try:
+    import cv2
+except:
+    cv2 = None
