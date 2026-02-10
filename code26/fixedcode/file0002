@@ -1,1 +1,210 @@
+# ==========================================================
+#               ISHA ASSISTANT – FINAL CODE
+# ==========================================================
 
+import json
+import datetime
+import hashlib
+import os
+import re
+import logging
+import time
+import threading
+from collections import deque
+
+# Optional camera
+try:
+    import cv2
+except:
+    cv2 = None
+
+# ==========================================================
+# LOGGING
+# ==========================================================
+logging.basicConfig(
+    filename="isha_assistant.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+# ==========================================================
+# COMMAND HISTORY
+# ==========================================================
+class CommandHistory:
+    def __init__(self, max_len=50):
+        self.history = deque(maxlen=max_len)
+
+    def add(self, command):
+        self.history.append({
+            "time": datetime.datetime.now().isoformat(),
+            "command": command
+        })
+
+# ==========================================================
+# CONTEXT MEMORY
+# ==========================================================
+class ContextMemory:
+    def __init__(self):
+        self.data = {}
+
+    def set(self, k, v):
+        self.data[k] = v
+
+    def get(self, k, d=None):
+        return self.data.get(k, d)
+
+# ==========================================================
+# OFFLINE INTENT BRAIN
+# ==========================================================
+class OfflineBrain:
+    def __init__(self):
+        self.rules = {
+            r"\btime\b": "TIME",
+            r"\bdate\b": "DATE",
+            r"\bexit\b": "EXIT"
+        }
+
+    def detect(self, text):
+        for p, i in self.rules.items():
+            if re.search(p, text):
+                return i
+        return "OTHER"
+
+# ==========================================================
+# SAFE SELF LEARNING (SUGGEST ONLY)
+# ==========================================================
+class SelfLearningEngine:
+    def analyze(self):
+        if not os.path.exists("isha_assistant.log"):
+            return []
+        data = open("isha_assistant.log", "r", errors="ignore").read().lower()
+        tips = []
+        if data.count("error") > 3:
+            tips.append("Too many errors detected.")
+        return tips
+
+# ==========================================================
+# SECURE LOCAL STORE
+# ==========================================================
+class SecureLocalStore:
+    def __init__(self, file="isha_user_data.dat"):
+        self.file = file
+        self.key = hashlib.sha256(b"ISHA_SECRET").digest()
+
+    def save(self, data):
+        raw = json.dumps(data).encode()
+        enc = bytes(raw[i] ^ self.key[i % len(self.key)] for i in range(len(raw)))
+        open(self.file, "wb").write(enc)
+
+    def load(self):
+        if not os.path.exists(self.file):
+            return {}
+        enc = open(self.file, "rb").read()
+        raw = bytes(enc[i] ^ self.key[i % len(self.key)] for i in range(len(enc)))
+        return json.loads(raw.decode())
+
+# ==========================================================
+# GESTURE ENGINE (DEMO)
+# ==========================================================
+class GestureEngine:
+    def detect_gesture(self, frame):
+        # Demo gesture (future: MediaPipe)
+        return "PALM"
+
+# ==========================================================
+# GESTURE CONTROLLER (SECRET + TIMEOUT)
+# ==========================================================
+class GestureController:
+    def __init__(self, timeout=30):
+        self.active = False
+        self.timeout = timeout
+        self.start_time = None
+        self.engine = GestureEngine()
+
+    def activate(self):
+        if self.active:
+            return "Gesture already active"
+        self.active = True
+        self.start_time = time.time()
+        threading.Thread(target=self.camera_loop, daemon=True).start()
+        logging.info("Gesture mode ACTIVATED")
+        return "Gesture mode activated (30 sec)"
+
+    def deactivate(self):
+        self.active = False
+        logging.info("Gesture mode DEACTIVATED")
+        return "Gesture mode deactivated"
+
+    def camera_loop(self):
+        if not cv2:
+            logging.warning("Camera not available")
+            return
+        cap = cv2.VideoCapture(0)
+        while self.active:
+            if time.time() - self.start_time > self.timeout:
+                self.deactivate()
+                break
+            ret, frame = cap.read()
+            if not ret:
+                continue
+            gesture = self.engine.detect_gesture(frame)
+            if gesture:
+                print("[GESTURE DETECTED]:", gesture)
+            time.sleep(1)
+        cap.release()
+
+# ==========================================================
+# ISHA CORE
+# ==========================================================
+class IshaCore:
+    def __init__(self):
+        self.history = CommandHistory()
+        self.context = ContextMemory()
+        self.brain = OfflineBrain()
+        self.learning = SelfLearningEngine()
+        self.store = SecureLocalStore()
+        self.gesture = GestureController()
+
+    def process_command(self, text):
+        text = text.strip().lower()
+        self.history.add(text)
+
+        # 🔐 SECRET PASSCODE
+        if text == "open 86":
+            return self.gesture.activate()
+
+        if text in ["close 86", "stop 86"]:
+            return self.gesture.deactivate()
+
+        intent = self.brain.detect(text)
+
+        if intent == "TIME":
+            return datetime.datetime.now().strftime("%H:%M:%S")
+
+        if intent == "DATE":
+            return datetime.date.today().isoformat()
+
+        if intent == "EXIT":
+            return "EXIT"
+
+        for tip in self.learning.analyze():
+            logging.info("SUGGESTION: " + tip)
+
+        return f"Processed: {text}"
+
+# ==========================================================
+# RUN (TEXT MODE CHECK)
+# ==========================================================
+if __name__ == "__main__":
+    isha = IshaCore()
+    print("ISHA started")
+    print("Secret: open 86 | close 86")
+    print("Type exit to stop\n")
+
+    while True:
+        cmd = input("You: ")
+        res = isha.process_command(cmd)
+        if res == "EXIT":
+            print("ISHA stopped")
+            break
+        print("ISHA:", res)
