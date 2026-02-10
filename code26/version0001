@@ -1,1 +1,214 @@
+# ==========================================================
+#               ISHA ASSISTANT - VERSION 1
+#   Offline Personal Brain | Context Memory | History
+#   Safe Self-Learning (NO self code change)
+# ==========================================================
 
+# ---- REQUIRED IMPORTS (already mostly present, safe to repeat) ----
+import json                     # data store / load ke liye
+import datetime                 # time stamp ke liye
+import hashlib                  # encryption key banane ke liye
+import os                       # file handling
+import re                       # text pattern matching
+import logging                  # logs ke liye
+from collections import deque   # fixed size history store
+
+# ==========================================================
+# 1️⃣ COMMAND HISTORY SYSTEM
+# ==========================================================
+# Ye class user ke last commands yaad rakhegi
+
+class CommandHistory:
+    def __init__(self, max_len=50):
+        # deque ek list jaisa hota hai jo limit ke baad purana data hata deta hai
+        self.history = deque(maxlen=max_len)
+
+    def add(self, command_text):
+        # Jab bhi command aaye, ye function call hoga
+        self.history.append({
+            "time": datetime.datetime.now().isoformat(),  # kab command aayi
+            "command": command_text                        # kya command thi
+        })
+
+    def last_command(self):
+        # last command return karega
+        if self.history:
+            return self.history[-1]
+        return None
+
+
+# ==========================================================
+# 2️⃣ CONTEXT MEMORY
+# ==========================================================
+# Context ka matlab: "abhi kya chal raha hai"
+
+class ContextMemory:
+    def __init__(self):
+        self.context = {}
+
+    def set(self, key, value):
+        # koi bhi state yaad rakhne ke liye
+        self.context[key] = value
+
+    def get(self, key, default=None):
+        # context se value lene ke liye
+        return self.context.get(key, default)
+
+    def clear(self):
+        # context reset
+        self.context.clear()
+
+
+# ==========================================================
+# 3️⃣ OFFLINE PERSONAL BRAIN (INTENT ENGINE)
+# ==========================================================
+# Ye bina API ke text samajhne ki koshish karta hai
+
+class OfflineBrain:
+    def __init__(self):
+        # simple rules (future me ML se replace ho sakta hai)
+        self.intent_rules = {
+            r"\bopen\b": "OPEN",
+            r"\bclose\b": "CLOSE",
+            r"\btime\b": "TIME",
+            r"\bdate\b": "DATE",
+            r"\bbattery\b": "BATTERY",
+            r"\bexit\b": "EXIT"
+        }
+
+    def detect_intent(self, text):
+        text = text.lower()
+
+        # har rule check karega
+        for pattern, intent in self.intent_rules.items():
+            if re.search(pattern, text):
+                return intent
+
+        # agar kuch match nahi hua
+        return "UNKNOWN"
+
+
+# ==========================================================
+# 4️⃣ SAFE SELF-LEARNING ENGINE
+# ==========================================================
+# Ye sirf SUGGEST karega, khud code change nahi karega ❌
+
+class SelfLearningEngine:
+    def __init__(self, log_file="isha_assistant.log"):
+        self.log_file = log_file
+
+    def analyze_logs(self):
+        # agar log file hi nahi hai
+        if not os.path.exists(self.log_file):
+            return []
+
+        suggestions = []
+
+        with open(self.log_file, "r", errors="ignore") as file:
+            logs = file.read().lower()
+
+        # example learning rules
+        if logs.count("error") > 3:
+            suggestions.append(
+                "Zyada errors aa rahe hain. Error handling improve kar sakte ho."
+            )
+
+        if "gesture" not in logs:
+            suggestions.append(
+                "Gesture system kam use ho raha hai. Gesture sensitivity badha sakte ho."
+            )
+
+        return suggestions
+
+
+# ==========================================================
+# 5️⃣ SECURE LOCAL USER DATA STORE
+# ==========================================================
+# User ka data encrypted form me save hoga (offline)
+
+class SecureLocalStore:
+    def __init__(self, filename="isha_user_data.dat"):
+        self.filename = filename
+
+        # ek fixed secret key (local use ke liye)
+        self.secret_key = hashlib.sha256(b"ISHA_LOCAL_SECRET").digest()
+
+    def save(self, data_dict):
+        # dict → json → bytes
+        raw_data = json.dumps(data_dict).encode()
+
+        # simple XOR encryption (basic but offline safe)
+        encrypted = bytes(
+            raw_data[i] ^ self.secret_key[i % len(self.secret_key)]
+            for i in range(len(raw_data))
+        )
+
+        with open(self.filename, "wb") as f:
+            f.write(encrypted)
+
+    def load(self):
+        if not os.path.exists(self.filename):
+            return {}
+
+        encrypted = open(self.filename, "rb").read()
+
+        decrypted = bytes(
+            encrypted[i] ^ self.secret_key[i % len(self.secret_key)]
+            for i in range(len(encrypted))
+        )
+
+        return json.loads(decrypted.decode())
+
+
+# ==========================================================
+# 6️⃣ VERSION-1 INTEGRATION WITH EXISTING ISHA
+# ==========================================================
+# Yahin hum tumhare main assistant me Version-1 jod rahe hain
+
+def attach_version_1(assistant):
+    """
+    assistant = tumhara existing IshaAssistant object
+    """
+
+    # --- new systems attach ---
+    assistant.v1_history = CommandHistory()
+    assistant.v1_context = ContextMemory()
+    assistant.v1_brain = OfflineBrain()
+    assistant.v1_learning = SelfLearningEngine()
+    assistant.v1_store = SecureLocalStore()
+
+    # --- original function ka backup ---
+    original_process_command = assistant.process_command
+
+    def new_process_command(command_text):
+        # 1️⃣ history me save
+        assistant.v1_history.add(command_text)
+
+        # 2️⃣ intent detect
+        intent = assistant.v1_brain.detect_intent(command_text)
+        assistant.v1_context.set("last_intent", intent)
+
+        # 3️⃣ existing logic ko call (tumhara purana code)
+        response = original_process_command(command_text)
+
+        # 4️⃣ safe learning (sirf suggestion)
+        suggestions = assistant.v1_learning.analyze_logs()
+        if suggestions:
+            logging.info("VERSION-1 SUGGESTIONS:")
+            for s in suggestions:
+                logging.info(" - " + s)
+
+        return response
+
+    # assistant ka process_command replace kar diya
+    assistant.process_command = new_process_command
+
+
+# ==========================================================
+# 7️⃣ AUTO-ATTACH WHEN PROGRAM STARTS
+# ==========================================================
+try:
+    attach_version_1(isha)   # yahan 'isha' tumhara main object hai
+    logging.info("ISHA Version-1 successfully loaded.")
+except Exception as e:
+    logging.error("Version-1 attach failed: " + str(e))
