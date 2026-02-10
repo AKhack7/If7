@@ -1,1 +1,91 @@
+# ============================================================
+# 🔥 ADVANCED AI EXTENSION BLOCK (SAFE ADD-ON)
+# Paste at END of isha.py
+# ============================================================
 
+import json
+import psutil
+import time
+import os
+
+# ---------------- USER PROFILE ----------------
+class UserProfile:
+    def __init__(self, name="default"):
+        self.name = name
+        self.data = {
+            "preferred_volume": 50,
+            "frequent_commands": [],
+            "gestures": {}
+        }
+
+    def save(self):
+        with open(f"user_{self.name}.json", "w") as f:
+            json.dump(self.data, f)
+
+    def load(self):
+        if os.path.exists(f"user_{self.name}.json"):
+            with open(f"user_{self.name}.json") as f:
+                self.data = json.load(f)
+
+# ---------------- TASK MEMORY ----------------
+class TaskMemory:
+    def __init__(self):
+        self.history = []
+
+    def remember(self, task):
+        self.history.append(task)
+        if len(self.history) > 50:
+            self.history.pop(0)
+
+# ---------------- ACTIVITY DETECTION ----------------
+class ActivityDetector:
+    def detect(self):
+        cpu = psutil.cpu_percent()
+        if cpu > 70:
+            return "heavy_usage"
+        return "normal"
+
+# ---------------- SMART CONFIRMATION ----------------
+def confirm_action(action_name):
+    print(f"[CONFIRM] Do you want to proceed with: {action_name}?")
+    return True  # future: voice/gesture confirmation
+
+# ---------------- OFFLINE HELP ----------------
+def offline_help():
+    return """
+Available Controls:
+- Voice Commands
+- Gesture Control
+- Screenshot / Recording
+- File Management
+- Volume Control
+"""
+
+# ---------------- SYSTEM HEALTH ----------------
+def system_health_check():
+    ram = psutil.virtual_memory().percent
+    cpu = psutil.cpu_percent()
+    return f"CPU: {cpu}% | RAM: {ram}%"
+
+# ---------------- PLUGIN SYSTEM ----------------
+class PluginManager:
+    def __init__(self):
+        self.plugins = {}
+
+    def register(self, name, func):
+        self.plugins[name] = func
+
+    def run(self, name):
+        if name in self.plugins:
+            return self.plugins[name]()
+        return "Plugin not found"
+
+# ---------------- SAFE INIT ----------------
+try:
+    user = UserProfile("default")
+    user.load()
+    memory = TaskMemory()
+    activity = ActivityDetector()
+    plugins = PluginManager()
+except Exception as e:
+    print("Extension init error:", e)
