@@ -34,4 +34,6 @@ bast
 ## Download header-only libraries:
 
 
-## 
+## Build with CMake
+
+bast
