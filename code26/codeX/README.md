@@ -13,7 +13,7 @@ To compile this C++ version, you'll need to install:
 
 ## Installation Steps
 
-1. Install vcpkg (package manager for C++):
+Install vcpkg (package manager for C++):
 
 bast 
 ```
