@@ -30,3 +30,8 @@ bast
 .\vcpkg install opencv
 .\vcpkg install curl
 ```
+
+## Download header-only libraries:
+
+
+## 
