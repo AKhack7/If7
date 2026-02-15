@@ -33,6 +33,8 @@ bash
 
 ## Download header-only libraries:
 
+[Download httplib.h from](https://github.com/yhirose/cpp-httplib)
+[Download json.hpp from](https://github.com/nlohmann/json)
 
 ## Build with CMake
 
