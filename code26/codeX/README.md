@@ -9,3 +9,6 @@ To compile this C++ version, you'll need to install:
 > cpp-httplib - For HTTP server (single header file)
 
 > nlohmann/json - For JSON parsing (single header file)
+
+
+## Installation Steps
