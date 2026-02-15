@@ -15,7 +15,8 @@ To compile this C++ version, you'll need to install:
 
 1. Install vcpkg (package manager for C++):
 
-bast ```
+bast 
+```
 git clone https://github.com/Microsoft/vcpkg.git
 cd vcpkg
 .\bootstrap-vcpkg.bat
