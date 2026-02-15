@@ -15,7 +15,7 @@ To compile this C++ version, you'll need to install:
 
 Install vcpkg (package manager for C++):
 
-bast 
+bash
 ```
 git clone https://github.com/Microsoft/vcpkg.git
 cd vcpkg
@@ -25,7 +25,7 @@ cd vcpkg
 
 ## Install required packages:
 
-bast
+bash
 ```
 .\vcpkg install opencv
 .\vcpkg install curl
@@ -36,4 +36,10 @@ bast
 
 ## Build with CMake
 
-bast
+bash
+```
+mkdir build
+cd build
+cmake .. -DCMAKE_TOOLCHAIN_FILE=[path-to-vcpkg]/scripts/buildsystems/vcpkg.cmake
+cmake --build . --config Release
+```
