@@ -24,3 +24,9 @@ cd vcpkg
 ```
 
 ## Install required packages:
+
+bast
+```
+.\vcpkg install opencv
+.\vcpkg install curl
+```
