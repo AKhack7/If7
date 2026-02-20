@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VIP MUSIC · 10 tracks + Mor Fischer ripple</title>
+  <title>VIP MUSIC · Apne 10 MP3 Files</title>
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
@@ -30,7 +30,7 @@
       border: 1px solid rgba(255, 215, 0, 0.25);
       border-radius: 42px;
       box-shadow: 0 30px 50px rgba(0, 0, 0, 0.7), 0 0 0 2px rgba(255, 215, 0, 0.1) inset, 0 0 20px #fbbf2410;
-      width: 480px;
+      width: 500px;
       max-width: 100%;
       padding: 28px 24px 32px 24px;
       transition: box-shadow 0.2s;
@@ -73,11 +73,6 @@
       font-size: 0.9rem;
     }
 
-    .mor-fischer-badge i {
-      color: #fbbf24;
-    }
-
-    /* cover + ripple */
     .cover-section {
       position: relative;
       display: flex;
@@ -171,7 +166,6 @@
       100% { opacity: 0.9; box-shadow: 0 0 60px #ffd966; background: rgba(255, 215, 0, 0.5); width: 210px; height: 210px;}
     }
 
-    /* song meta */
     .song-info {
       text-align: center;
       margin: 20px 0 16px;
@@ -196,7 +190,6 @@
       margin-top: 6px;
     }
 
-    /* progress */
     .progress-area {
       margin: 18px 0 12px;
     }
@@ -228,7 +221,6 @@
       transition: width 0.05s linear;
     }
 
-    /* playlist : 10 music files added */
     .playlist-section {
       margin: 24px 0 10px;
       background: rgba(0, 0, 0, 0.3);
@@ -250,10 +242,6 @@
       display: flex;
       align-items: center;
       gap: 10px;
-    }
-
-    .playlist-section h4 i {
-      font-size: 1rem;
     }
 
     .playlist-items {
@@ -315,13 +303,6 @@
       opacity: 0.7;
     }
 
-    .track-item i {
-      color: #fbbf24;
-      font-size: 0.8rem;
-      opacity: 0.8;
-    }
-
-    /* extra controls */
     .extra-controls {
       display: flex;
       align-items: center;
@@ -370,17 +351,17 @@
 <body>
   <div class="vip-player">
     <div class="vip-header">
-      <span class="vip-tag">🎧 10 TRACKS</span>
+      <span class="vip-tag">🎧 10 MP3 FILES</span>
       <div class="mor-fischer-badge">
         <i class="fa-solid fa-plus"></i>
-        <span>Mor Fischer</span>
+        <span>Aapke Songs</span>
         <i class="fa-regular fa-star"></i>
       </div>
     </div>
 
     <div class="cover-section">
       <div class="cover-wrapper">
-        <img class="cover-image" id="coverImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23222945'/%3E%3Ccircle cx='50' cy='40' r='18' fill='%23fbbf24' opacity='0.3'/%3E%3Cpath d='M20 70 L80 70 L65 45 L35 45 Z' fill='%23fbbf24' opacity='0.7'/%3E%3Ctext x='22' y='85' fill='%23f5d987' font-size='12' font-weight='bold'%3E10 FILES%3C/text%3E%3C/svg%3E" alt="cover">
+        <img class="cover-image" id="coverImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23222945'/%3E%3Ccircle cx='50' cy='40' r='18' fill='%23fbbf24' opacity='0.3'/%3E%3Cpath d='M20 70 L80 70 L65 45 L35 45 Z' fill='%23fbbf24' opacity='0.7'/%3E%3Ctext x='22' y='85' fill='%23f5d987' font-size='12' font-weight='bold'%3EYOUR MP3%3C/text%3E%3C/svg%3E" alt="cover">
         <button class="play-btn" id="playPauseBtn">
           <i class="fa-solid fa-play" id="playIcon"></i>
         </button>
@@ -391,8 +372,8 @@
     </div>
 
     <div class="song-info">
-      <div class="song-title" id="songTitle">MOR FISCHER SELECTION</div>
-      <div class="song-artist" id="songArtist">10 premium tracks</div>
+      <div class="song-title" id="songTitle">AAPKA SONG</div>
+      <div class="song-artist" id="songArtist">MP3 Files</div>
     </div>
 
     <div class="progress-area">
@@ -405,11 +386,11 @@
       </div>
     </div>
 
-    <!-- PLAYLIST : 10 music files added (Mor Fischer catalog) -->
+    <!-- PLAYLIST - 10 MP3 FILES (APNE SONGS DAALEIN) -->
     <div class="playlist-section">
-      <h4><i class="fa-solid fa-music"></i> MOR FISCHER · 10 FILES <i class="fa-solid fa-circle-plus"></i></h4>
+      <h4><i class="fa-solid fa-music"></i> AAPKE 10 MP3 SONGS <i class="fa-solid fa-circle-plus"></i></h4>
       <div class="playlist-items" id="playlistContainer">
-        <!-- dynamically from JS, but we hardcode for clarity, then bind -->
+        <!-- JavaScript se bhariega -->
       </div>
     </div>
 
@@ -420,7 +401,7 @@
     </div>
 
     <div class="vip-footer">
-      <strong>+10 Music Files added</strong>  •  Mor Fischer edition • ripple on play
+      <strong>✅ 10 MP3 Files Added</strong>  •  Ab apne songs daalein • Ripple effect on play
     </div>
   </div>
 
@@ -428,26 +409,76 @@
 
   <script>
     (function() {
-      // ---------- 10 MUSIC FILES (public domain / free long samples) ----------
-      // All tracks are from free sources (SoundHelix) – we assign Mor Fischer as artist
+      // ===========================================================
+      // 🔥 YAHAN APNE 10 MP3 FILES ADD KAREIN 🔥
+      // ===========================================================
+      // ★ INSTRUCTION:
+      // 1. Ek folder banayein "songs" naam ka (ya kuch bhi)
+      // 2. Apni 10 MP3 files us folder mein daalein
+      // 3. Neeche src mein sahi path likhein, jaise: 'songs/tum-hi-ho.mp3'
+      // ===========================================================
+      
       const trackList = [
-        { title: 'GOLDEN SANDS', artist: 'Mor Fischer', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' },
-        { title: 'NEON DRIFT', artist: 'Mor Fischer', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-        { title: 'VELVET NIGHT', artist: 'Mor Fischer', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-        { title: 'DEEP SPACE', artist: 'Mor Fischer', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' },
-        { title: 'MIDNIGHT WAVE', artist: 'Mor Fischer', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3' },
-        { title: 'AURORA', artist: 'Mor Fischer', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3' },
-        { title: 'ECHO PARK', artist: 'Mor Fischer', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3' },
-        { title: 'STARDUST', artist: 'Mor Fischer', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3' },
-        { title: 'OCEAN DRIVE', artist: 'Mor Fischer', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3' },
-        { title: 'CRYSTAL', artist: 'Mor Fischer', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3' }
+        { 
+            title: 'SONG 1',           // Gaane ka naam (badle)
+            artist: 'Artist 1',          // Singer (badle)
+            src: 'songs/song1.mp3'       // MP3 FILE PATH - YAHAN BADLE
+        },
+        { 
+            title: 'SONG 2', 
+            artist: 'Artist 2', 
+            src: 'songs/song2.mp3' 
+        },
+        { 
+            title: 'SONG 3', 
+            artist: 'Artist 3', 
+            src: 'songs/song3.mp3' 
+        },
+        { 
+            title: 'SONG 4', 
+            artist: 'Artist 4', 
+            src: 'songs/song4.mp3' 
+        },
+        { 
+            title: 'SONG 5', 
+            artist: 'Artist 5', 
+            src: 'songs/song5.mp3' 
+        },
+        { 
+            title: 'SONG 6', 
+            artist: 'Artist 6', 
+            src: 'songs/song6.mp3' 
+        },
+        { 
+            title: 'SONG 7', 
+            artist: 'Artist 7', 
+            src: 'songs/song7.mp3' 
+        },
+        { 
+            title: 'SONG 8', 
+            artist: 'Artist 8', 
+            src: 'songs/song8.mp3' 
+        },
+        { 
+            title: 'SONG 9', 
+            artist: 'Artist 9', 
+            src: 'songs/song9.mp3' 
+        },
+        { 
+            title: 'SONG 10', 
+            artist: 'Artist 10', 
+            src: 'songs/song10.mp3' 
+        }
       ];
 
-      // ----- DOM elements -----
+      // ===========================================================
+      // ⚡ CODE AGGE KA HAI - ISSE MAT CHHEEDO ⚡
+      // ===========================================================
+      
+      // DOM elements
       const audio = document.getElementById('audio-player');
       const playBtn = document.getElementById('playPauseBtn');
       const playIcon = document.getElementById('playIcon');
-      const rippleEffect = document.getElementById('rippleEffect');
       const progressFill = document.getElementById('progressFill');
       const currentTimeSpan = document.getElementById('currentTime');
       const durationSpan = document.getElementById('durationTime');
@@ -460,10 +491,10 @@
       const playlistContainer = document.getElementById('playlistContainer');
       const coverImg = document.getElementById('coverImg');
 
-      let currentTrackIndex = 0;  // start with first track
+      let currentTrackIndex = 0;
       let isPlaying = false;
 
-      // ----- helper functions -----
+      // Helper functions
       function formatTime(seconds) {
         if (isNaN(seconds) || seconds < 0) return '0:00';
         const mins = Math.floor(seconds / 60);
@@ -476,23 +507,19 @@
         if (!track) return;
         audio.src = track.src;
         songTitle.innerText = track.title;
-        songArtist.innerText = track.artist + ' · VIP';
-        // update active track in playlist
+        songArtist.innerText = track.artist + ' · MP3';
+        
+        // Update active track in playlist
         document.querySelectorAll('.track-item').forEach((item, i) => {
           if (i === index) item.classList.add('active-track');
           else item.classList.remove('active-track');
         });
-        // reset play button & ripple if was playing
-        if (isPlaying) {
-          audio.play().catch(e => console.log('play error', e));
-        } else {
-          // if paused, just load metadata
-        }
-        // update cover little detail (optional, keep default)
-        coverImg.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23222945\'/%3E%3Ccircle cx=\'50\' cy=\'40\' r=\'18\' fill=\'%23fbbf24\' opacity=\'0.3\'/%3E%3Cpath d=\'M20 70 L80 70 L65 45 L35 45 Z\' fill=\'%23fbbf24\' opacity=\'0.7\'/%3E%3Ctext x=\'15\' y=\'85\' fill=\'%23f5d987\' font-size=\'9\' font-weight=\'bold\'%3E' + encodeURIComponent(track.title.slice(0,8)) + '%3C/text%3E%3C/svg%3E';
+        
+        // Update cover (optional)
+        coverImg.src = 'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'200\' height=\'200\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23222945\'/%3E%3Ccircle cx=\'50\' cy=\'40\' r=\'18\' fill=\'%23fbbf24\' opacity=\'0.3\'/%3E%3Cpath d=\'M20 70 L80 70 L65 45 L35 45 Z\' fill=\'%23fbbf24\' opacity=\'0.7\'/%3E%3Ctext x=\'15\' y=\'85\' fill=\'%23f5d987\' font-size=\'9\' font-weight=\'bold\'%3E' + track.title.slice(0,8) + '%3C/text%3E%3C/svg%3E';
       }
 
-      // build playlist UI
+      // Build playlist UI
       function buildPlaylist() {
         playlistContainer.innerHTML = '';
         trackList.forEach((track, idx) => {
@@ -511,18 +538,9 @@
               currentTrackIndex = idx;
               loadTrack(currentTrackIndex);
               if (isPlaying) {
-                audio.play().catch(e=>{}); // ensure play if it was playing
-              } else {
-                // optional: start playing on click? we follow toggle style: press play button to start
-                // but we can also automatically play: better user experience
-                audio.play().then(() => {
-                  isPlaying = true;
-                  playIcon.className = 'fa-solid fa-pause';
-                  playBtn.classList.add('playing');
-                }).catch(e=>{});
+                audio.play().catch(e => console.log(e));
               }
             } else {
-              // same track: toggle play
               togglePlay();
             }
           });
@@ -530,14 +548,17 @@
         });
       }
 
-      // toggle play/pause
+      // Toggle play/pause
       function togglePlay() {
         if (audio.paused) {
           audio.play().then(() => {
             isPlaying = true;
             playIcon.className = 'fa-solid fa-pause';
             playBtn.classList.add('playing');
-          }).catch(e => console.log('playback error:', e));
+          }).catch(e => {
+            console.log('Playback error:', e);
+            alert('MP3 file nahi mili! Check karein:\n1. "songs" folder banaya?\n2. MP3 files daali?\n3. File names sahi likhe?');
+          });
         } else {
           audio.pause();
           isPlaying = false;
@@ -546,7 +567,7 @@
         }
       }
 
-      // update progress
+      // Update progress
       function updateProgress() {
         if (!audio.duration) return;
         const current = audio.currentTime;
@@ -557,11 +578,11 @@
         durationSpan.textContent = formatTime(duration);
       }
 
-      // load first track
+      // Load first track and build playlist
       loadTrack(0);
       buildPlaylist();
 
-      // ---- event listeners ----
+      // Event listeners
       audio.addEventListener('loadedmetadata', () => {
         durationSpan.textContent = formatTime(audio.duration);
       });
@@ -581,19 +602,14 @@
       });
 
       audio.addEventListener('ended', () => {
-        // auto next if not loop
-        if (audio.loop) {
-          // stay
+        if (audio.loop) return;
+        if (currentTrackIndex < trackList.length - 1) {
+          currentTrackIndex++;
         } else {
-          // go to next track
-          if (currentTrackIndex < trackList.length - 1) {
-            currentTrackIndex++;
-          } else {
-            currentTrackIndex = 0; // loop to start
-          }
-          loadTrack(currentTrackIndex);
-          audio.play().catch(e=>{}); // autoplay next
+          currentTrackIndex = 0;
         }
+        loadTrack(currentTrackIndex);
+        audio.play().catch(e => {});
       });
 
       playBtn.addEventListener('click', togglePlay);
@@ -618,7 +634,7 @@
         }
         loadTrack(currentTrackIndex);
         if (isPlaying) {
-          audio.play().catch(e=>{});
+          audio.play().catch(e => {});
         }
       });
 
@@ -630,7 +646,7 @@
         }
         loadTrack(currentTrackIndex);
         if (isPlaying) {
-          audio.play().catch(e=>{});
+          audio.play().catch(e => {});
         }
       });
 
@@ -638,8 +654,6 @@
         audio.loop = !audio.loop;
         repeatBtn.style.color = audio.loop ? '#fbbf24' : '#e0d9ff';
       });
-
-      // optional: add double click or anything, but fine.
     })();
   </script>
 </body>
